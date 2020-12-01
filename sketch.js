@@ -124,7 +124,7 @@ function keyPressed() {
             board[i][j][2] = !board[i][j][2];
 
             (board[i][j][2]) ? (flags--) : (flags++);
-            document.getElementById('status').innerHTML = flags + " bombs are left";
+            document.getElementById('status').innerHTML = flags + " bombs left";
 
             if (bombs == 0) {
                 document.getElementById('status').innerHTML = "WIN!";
