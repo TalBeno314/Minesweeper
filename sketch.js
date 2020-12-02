@@ -220,4 +220,7 @@ function reset() {
     }
 
     click = false;
+    flags = 99;
+    bombs = flags;
+    document.getElementById('status').innerHTML = flags + " bombs left";
 }
