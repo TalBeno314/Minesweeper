@@ -1,126 +1,116 @@
-class Cell {
-    constructor(value, hidden, flagged) {
-        this.value = value;
-        this.hidden = hidden;
-        this.flagged = flagged;
-    }
+document.oncontextmenu = function() {
+    return false;
 }
 
-let diff;
-
-let h = 16;
-let w = 30;
-let flags = 99;
-let bombs = flags;
-let resetFlag = flags;
-let cell;
-let can;
-
-let board = new Array(w);
-for (let i = 0; i < w; i++) {
-    board[i] = new Array(h);
-    for (let j = 0; j < h; j++) {
-        board[i][j] = new Cell("", true, false);
-    }
+let textColor = {
+    1: "#0100fe",
+    2: "#017f01",
+    3: "#fe0000",
+    4: "#010080",
+    5: "#810102",
+    6: "#008081",
+    7: "#000000",
+    8: "#404040"
 }
 
-console.log(board);
+let mine, unhidden, hidden, flag;
+let cellSize = 30;
+let gameIsOver = false;
+
+function preload() {
+    mine = loadImage("https://i.imgur.com/7JQHBVM.png");
+    unhidden = loadImage("https://i.imgur.com/Z8jKF74.png");
+    hidden = loadImage("https://i.imgur.com/iYh26qM.png");
+    flag = loadImage("https://i.imgur.com/Zb3lunD.png");
+}
 
 function setup() {
-    if (windowWidth >= windowHeight) {
-        cell = windowHeight / 25;
-    } else {
-        cell = windowWidth / 30;
-    }
-
-    let title = createElement('h1', "Minesweeper");
-    title.style("margin-top: 0%; color: white; text-align: center; font-family: Arial, Helvetica, sans-serif; fon-size: " + cell * 2 + ";");
-
-    can = createCanvas(w * cell, h * cell);
-    can.position(windowWidth / 2 - w * cell / 2, cell * 3);
-
-    let el = createElement('h1', flags + ' bombs left').id('status');
-    el.style("text-align: center; color: white; font-size: " + cell * 0.8 + ";");
-    el.size(cell * 8);
-    el.position((windowWidth - 30 * cell) / 2 + cell * 5, cell * 0.7);
-
-    let play = createButton('Reset')
-    play.style('font-size: ' + cell * 0.8 + 'px; color: white; border-color: white; background-color: black; border-width: 5px');
-    play.size(cell * 3);
-    play.position(windowWidth / 2 - cell * 1.5, cell * 1.5);
-    play.mousePressed(reset);
-
-    diff = createSelect();
-    diff.option('expert');
-    diff.option('intermidiate');
-    diff.option('begginer');
-    diff.position((windowWidth) / 2 + cell * 3, cell * 1.5);
-    diff.style('font-size: ' + cell * 0.8 + 'px; color: white; border-color: white; background-color: black; border-width: 5px');
-    diff.changed(difficulty);
+    h2 = createElement('h2', flags.toString()).id('flags').style(`color: white; position: absolute; font-size: 50px; left: ${windowWidth / 2 - cellSize * w / 2}px; margin-top: 0%;`);
+    canvas = createCanvas(w * cellSize, h * cellSize).style(`position: absolute; top: 10%; left: ${windowWidth / 2 - cellSize * w / 2}px;`);
+    button = createButton('new game').position(windowWidth / 2 - cellSize * 1.7, cellSize * 0.3).mousePressed(reset).size(cellSize * 3.4, cellSize * 2).style("font-size: 22px; font-weight: bolder;");
+    buttonAI = createButton('AI').position(windowWidth / 2 + width / 2 - cellSize * 2.5, cellSize * 0.3).size(cellSize * 2.5, cellSize * 2).style("font-size: 22px; font-weight: bolder;").mousePressed(start);
+    p = createElement('p', '100').id('timer').style(`color: white; border: white; position: absolute; font-size: 50px; left: ${windowWidth / 2 - cellSize * w / 2 + cellSize * 3}px; margin-top: 0%;`);
+    diff = createSelect().style("font-size: 22px; font-weight: bolder; text-align: center;");
+    diff.option("expert");
+    diff.option("intermediate");
+    diff.option("begginer");
+    diff.position(windowWidth / 2 - cellSize * 3, cellSize * 0.3 + cellSize * (h + 2.5)).size(cellSize * 6, cellSize * 2);
+    diff.changed(selectDiff);
+    diff.id("diff");
+    createElement('div', "The AI is currently very dumb and won't win every time").style(`width: 100%; position: absolute; top: ${windowHeight - cellSize}px; text-align: center; color: white;`);
 }
 
 function draw() {
-    background(0);
-    stroke(255);
-    strokeWeight(1);
-    fill(255);
-    textSize(0.8 * cell);
-
-    for (let i = 0; i <= w; i++) {
-        line(i * cell, 0, i * cell, h * cell);
-    }
-
-    for (let i = 0; i <= h; i++) {
-        line(0, i * cell, w * cell, i * cell);
-    }
+    background(255);
 
     for (let i = 0; i < w; i++) {
+        stroke(0);
         for (let j = 0; j < h; j++) {
-            if (!board[i][j].hidden) {
-                if (board[i][j].value == "B") {
-                    fill(255);
-                    text(board[i][j].value, i * cell + cell / 4, j * cell + cell * 3 / 4);
-                } else if (board[i][j].value > 0) {
-                    fill(255);
-                    text(board[i][j].value, i * cell + cell / 4, j * cell + cell * 3 / 4);
-                }
-            } else {
-                fill(100);
-                square(i * cell, j * cell, cell);
-                if (board[i][j].flagged) {
-                    fill(255);
-                    text("F", i * cell + cell / 4, j * cell + cell * 3 / 4);
-                }
+            let cell = board[i][j];
+
+            image(unhidden, cellSize * i, cellSize * j, cellSize, cellSize);
+            if (cell.isBomb) {
+                image(mine, cellSize * i, cellSize * j, cellSize, cellSize);
+            } else if (cell.value > 0) {
+                //textFont("Impact");
+                strokeWeight(0);
+                fill(textColor[cell.value]);
+                textSize(25);
+                textAlign(CENTER);
+                text(cell.value, (i + 0.5) * cellSize, (j + 0.75) * cellSize);
+            }
+            if (cell.misplaced) {
+                strokeWeight(3);
+                image(mine, cellSize * i, cellSize * j, cellSize, cellSize);
+                stroke(255, 0, 0);
+                line(cellSize * i + 5, cellSize * j + 5, cellSize * (i + 1) - 5, cellSize * (j + 1) - 5);
+                line(cellSize * i + 5, cellSize * (j + 1) - 5, cellSize * (i + 1) - 5, cellSize * j + 5);
+            }
+            if (cell.isHidden) {
+                image(hidden, cellSize * i, cellSize * j, cellSize, cellSize);
+            }
+            if (cell.isFlagged) {
+                image(flag, cellSize * i, cellSize * j, cellSize, cellSize);
             }
         }
     }
+
+    if (con && generated && !gameOver()) {
+        ai();
+    }
+    gameOver();
 }
 
-let click = false;
-
-function mouseClicked() {
-    let i = floor(mouseX / cell);
-    let j = floor(mouseY / cell);
+function mousePressed() {
+    let i = floor(mouseX / cellSize);
+    let j = floor(mouseY / cellSize);
 
     if (i >= 0 && j >= 0 && i < w && j < h) {
-        if (!click) {
-            bomb(board, i, j);
-            addNumbers(board);
+        if (!generated) {
+            generateBoard(board, i, j);
             reveal(board, i, j);
-            click = true;
-        } else {
-            if (board[i][j].hidden) {
-                if (!board[i][j].flagged) {
-                    if (board[i][j].value == "B") {
-                        document.getElementById('status').innerHTML = "GAME OVER";
-                        for (let i = 0; i < w; i++) {
-                            for (let j = 0; j < h; j++) {
-                                if (board[i][j].value == "B") {
-                                    board[i][j].hidden = false;
-                                }
-                            }
-                        }
-                    }
+            generated = true;
+            con = false;
+            startTimer();
+        }
+
+        if (mouseButton === RIGHT) {
+            if (board[i][j].isHidden) {
+                board[i][j].isFlagged = !board[i][j].isFlagged;
+                flags += (board[i][j].isFlagged) ? (-1) : (1);
+                if (board[i][j].isBomb) {
+                    bombs += (board[i][j].isFlagged) ? (-1) : (1);
+                }
+                $('#flags')[0].innerHTML = flags.toString();
+            }
+        }
+
+        if (mouseButton === LEFT) {
+            if (!(board[i][j].isFlagged)) {
+                if (board[i][j].isBomb) {
+                    end(board);
+                } else {
+                    board[i][j].isHidden = false;
                     reveal(board, i, j);
                 }
             }
@@ -128,141 +118,46 @@ function mouseClicked() {
     }
 }
 
-function keyPressed() {
-    if (keyCode === 70) {
-        let i = floor(mouseX / cell);
-        let j = floor(mouseY / cell);
-
-        if (board[i][j].hidden) {
-            if (board[i][j].value == "B") {
-                (board[i][j].flagged) ? (bombs++) : (bombs--);
-            }
-            board[i][j].flagged = !board[i][j].flagged;
-
-            (board[i][j].flagged) ? (flags--) : (flags++);
-            document.getElementById('status').innerHTML = flags + " bombs left";
-
-            if (bombs == 0) {
-                document.getElementById('status').innerHTML = "WIN!";
-                for (let i = 0; i < w; i++) {
-                    for (let j = 0; j < h; j++) {
-                        board[i][j].hidden = false;
-                    }
-                }
-            }
-        }
+function start() {
+    let i = floor(w / 2);
+    let j = floor(h / 2);
+    if (!generated) {
+        generateBoard(board, i, j);
+        reveal(board, i, j);
+        generated = true;
+        con = true;
+        startTimer();
+        frameRate(20);
     }
 }
 
-function bomb(board, x, y) {
-    let bombCount = 0;
-    for (let i = 0; i < bombs; i++) {
-        if (true) {
-            let bombx = Math.floor(Math.random() * w);
-            let bomby = Math.floor(Math.random() * h);
-
-            while (board[bombx][bomby].value == "B") {
-                bombx = Math.floor(Math.random() * w);
-                bomby = Math.floor(Math.random() * h);
-            }
-
-            while (Math.abs(bombx - x) < 2 && Math.abs(bomby - y) < 2) {
-                bombx = Math.floor(Math.random() * w);
-                bomby = Math.floor(Math.random() * h);
-            }
-
-            board[bombx][bomby].value = "B";
-
-            if (board[bombx][bomby].value == "B") {
-                bombCount++;
-            }
-        }
-    }
+function rerun() {
+    canvas = createCanvas(w * cellSize, h * cellSize).style(`position: absolute; top: 10%; left: ${windowWidth / 2 - cellSize * w / 2}px;`);
+    diff.position(windowWidth / 2 - cellSize * 3, cellSize * 0.3 + cellSize * (h + 2.5)).size(cellSize * 6, cellSize * 2);
 }
 
-function addNumbers(board) {
-    for (let i = 0; i < w; i++) {
-        for (let j = 0; j < h; j++) {
-            let bombCount = 0;
-            if (board[i][j].value == "") {
-                for (let l = -1; l <= 1; l++) {
-                    for (let k = -1; k <= 1; k++) {
-                        if (!((i + l <= -1) || (i + l >= w) || (j + k <= -1) || (j + k >= h))) {
-                            if (board[i + l][j + k].value == "B") {
-                                bombCount++;
-                            }
-                        }
-                    }
-                }
-
-                board[i][j].value = bombCount;
-            }
-        }
-    }
-}
-
-function reveal(board, x, y) {
-    if (board[x][y].value == 0) {
-        board[x][y].hidden = false;
-
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-                if (!((x + i == -1) || (x + i == w) || (y + j == -1) || (y + j == h))) {
-                    if (!(i == 0 && j == 0)) {
-                        if (board[x + i][y + j].hidden) {
-                            if (board[x + i][y + j].value > 0) {
-                                board[x + i][y + j].hidden = false;
-                            } else if (board[x + i][y + j].value == 0) {
-                                board[x + i][y + j].hidden = false;
-                                reveal(board, x + i, y + j);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    } else if (board[x][y].value > 0) {
-        board[x][y].hidden = false;
-    }
-}
-
-function reset() {
-    board = new Array(w);
-    for (let i = 0; i < w; i++) {
-        board[i] = new Array(h);
-        for (let j = 0; j < h; j++) {
-            board[i][j] = new Cell("", true, false);
-        }
-    }
-
-    click = false;
-    flags = resetFlag;
-    bombs = resetFlag;
-    document.getElementById('status').innerHTML = flags + " bombs left";
-}
-
-function difficulty() {
-    switch (diff.value()) {
-        case 'begginer':
-            h = 9;
-            w = 9;
-            bombs = 10;
-            break;
-        case 'intermidiate':
-            h = 16;
-            w = 16;
-            bombs = 40;
-            break;
-        case 'expert':
-            h = 16;
+function selectDiff() {
+    let difficulty = $('#diff')[0].value;
+    console.log(difficulty);
+    switch (difficulty) {
+        case "expert":
             w = 30;
-            bombs = 99
+            h = 16;
+            max = 99;
             break;
-    }
+        case "intermediate":
+            w = 16;
+            h = 16;
+            max = 40;
+            break;
+        case "begginer":
+            w = 9;
+            h = 9;
+            max = 10;
+            break;
 
-    flags = bombs;
-    resetFlag = flags;
-    click = false;
-    can.position(windowWidth / 2 - w * cell / 2, cell * 3);
+    }
+    reset();
+    rerun();
     reset();
 }
