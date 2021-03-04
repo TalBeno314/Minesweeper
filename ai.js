@@ -61,53 +61,13 @@ function ai() {
         zeroChanges++;
         if (zeroChanges >= 10) {
             let roll = true;
-            if (flags < (0.6 * max)) {
-                if (flags == 1) {
-                    for (let i = 0; i < w; i++) {
-                        for (let j = 0; j < h; j++) {
-                            if (!board[i][j].isFlagged && board[i][j].isHidden) {
-                                board[i][j].isFlagged = !board[i][j].isFlagged;
-                                flags += (board[i][j].isFlagged) ? (-1) : (1);
-                                if (board[i][j].isBomb) {
-                                    bombs += (board[i][j].isFlagged) ? (-1) : (1);
-                                }
-                                $('#flags')[0].innerHTML = flags.toString();
-                                if (!gameOver()) {
-                                    board[i][j].isFlagged = !board[i][j].isFlagged;
-                                    flags += (board[i][j].isFlagged) ? (-1) : (1);
-                                    if (board[i][j].isBomb) {
-                                        bombs += (board[i][j].isFlagged) ? (-1) : (1);
-                                    }
-                                    $('#flags')[0].innerHTML = flags.toString();
-                                } else {
-                                    //end(board);
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    while (roll) {
-                        let x = floor(random(0, w));
-                        let y = floor(random(0, h));
-                        if (board[x][y].isHidden && !board[x][y].isFlagged) {
-                            reveal(board, x, y);
-                            roll = false;
-                        }
-                    }
-                }
-            } else {
-                let x = floor(random(0, w));
-                let y = floor(random(0, h));
-                if (board[x][y].isHidden && !board[x][y].isFlagged) {
-                    reveal(board, x, y);
-                    roll = false;
-                }
-                //con = false;
-                //frameRate(30);
+            let x = floor(random(0, w));
+            let y = floor(random(0, h));
+            if (board[x][y].isHidden && !board[x][y].isFlagged) {
+                reveal(board, x, y);
+                roll = false;
             }
         }
-        //con = false;
-        //frameRate(30);
     } else if (zeroChanges > 0) {
         zeroChanges = 0;
     }

@@ -120,13 +120,6 @@ function reset() {
 }
 
 function gameOver() {
-    if (flags - bombs == 0 && bombs == 0) {
-        clearInterval(timerStart);
-        time = 0;
-        revealAll();
-        return true;
-    }
-
     let notHidden = 0;
     let hidden = 0;
     for (let i = 0; i < w; i++) {
@@ -156,6 +149,9 @@ function revealAll() {
         for (let j = 0; j < h; j++) {
             if (board[i][j].isHidden && !board[i][j].isFlagged && !board[i][j].isBomb) {
                 board[i][j].isHidden = false;
+            }
+            if (board[i][j].isBomb) {
+                board[i][j].isFlagged = true;
             }
         }
     }
