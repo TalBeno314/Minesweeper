@@ -1,4 +1,5 @@
 let zeroChanges = 0;
+let doRoll = true;
 
 function ai() {
     let changes = 0;
@@ -49,6 +50,24 @@ function ai() {
                                         reveal(board, i + di, j + dj);
                                         changes++;
                                     }
+                                }
+                            }
+                        }
+                    }
+                    if (zeroChanges == 5 && flaggedNeighbors < cell.value && hiddenNeighbors > (cell.value - flaggedNeighbors) && flaggedNeighbors > 0) {
+                        let roll = true;
+                        while (roll) {
+                            let di = floor(random(-1, 2));
+                            let dj = floor(random(-1, 2));
+                            if (((i + di) >= 0 && (i + di) < w) && ((j + dj) >= 0 && (j + dj) < h)) {
+                                if (!board[i + di][j + dj].isFlagged && board[i + di][j + dj].isHidden) {
+                                    board[i + di][j + dj].isHidden = false;
+                                    reveal(board, i + di, j + dj);
+                                    roll = false;
+                                    zeroChanges = 0;
+                                    console.log(i + di, j + dj);
+                                    doRoll = false;
+                                    changes++;
                                 }
                             }
                         }
