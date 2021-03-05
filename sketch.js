@@ -96,7 +96,7 @@ function mousePressed() {
 
         if (mouseButton === RIGHT) {
             if (board[i][j].isHidden) {
-                if (flags > 0) {
+                if ((flags > 0 && !board[i][j].isFlagged) || board[i][j].isFlagged) {
                     board[i][j].isFlagged = !board[i][j].isFlagged;
                     flags += (board[i][j].isFlagged) ? (-1) : (1);
                     if (board[i][j].isBomb) {
