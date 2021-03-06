@@ -45,8 +45,6 @@ function ai() {
                             for (let dj = -1; dj <= 1; dj++) {
                                 if (((i + di) >= 0 && (i + di) < w) && ((j + dj) >= 0 && (j + dj) < h)) {
                                     if (!board[i + di][j + dj].isFlagged && board[i + di][j + dj].isHidden) {
-
-                                        board[i + di][j + dj].isHidden = false;
                                         reveal(board, i + di, j + dj);
                                         changes++;
                                     }
@@ -61,7 +59,6 @@ function ai() {
                             let dj = floor(random(-1, 2));
                             if (((i + di) >= 0 && (i + di) < w) && ((j + dj) >= 0 && (j + dj) < h)) {
                                 if (!board[i + di][j + dj].isFlagged && board[i + di][j + dj].isHidden) {
-                                    board[i + di][j + dj].isHidden = false;
                                     reveal(board, i + di, j + dj);
                                     roll = false;
                                     zeroChanges = 0;

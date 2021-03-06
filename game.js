@@ -57,9 +57,7 @@ function generateBoard(board, i, j) {
 }
 
 function reveal(board, x, y) {
-    if (!board[x][y].isBomb) {
-        board[x][y].isHidden = false;
-    }
+    board[x][y].isHidden = false;
     if (board[x][y].value == 0 && !board[x][y].isBomb) {
         board[x][y].isHidden = false;
         for (let dx = -1; dx <= 1; dx++) {
@@ -70,7 +68,6 @@ function reveal(board, x, y) {
                             if (board[x + dx][y + dy].value > 0) {
                                 board[x + dx][y + dy].isHidden = false;
                             } else {
-                                board[x + dx][y + dy].isHidden = false;
                                 reveal(board, x + dx, y + dy);
                             }
                         }
@@ -122,14 +119,9 @@ function reset() {
 }
 
 function gameOver() {
-    let notHidden = 0;
     let hidden = 0;
     for (let i = 0; i < w; i++) {
         for (let j = 0; j < h; j++) {
-            /*if (!board[i][j].isHidden && board[i][j].isBomb) {
-                notHidden++;
-                console.log("not hidden");
-            }*/
             if (!board[i][j].isHidden) {
                 hidden++;
             }

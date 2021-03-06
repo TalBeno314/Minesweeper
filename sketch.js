@@ -112,7 +112,6 @@ function mousePressed() {
                 if (board[i][j].isBomb) {
                     end(board);
                 } else {
-                    board[i][j].isHidden = false;
                     reveal(board, i, j);
                 }
             }
