@@ -37,7 +37,7 @@ function setup() {
     diff.position(windowWidth / 2 - cellSize * 3, cellSize * 0.3 + cellSize * (h + 2.5)).size(cellSize * 6, cellSize * 2);
     diff.changed(selectDiff);
     diff.id("diff");
-    createElement('div', "The AI is currently very dumb and won't win every time").style(`width: 100%; position: absolute; top: ${windowHeight - cellSize}px; text-align: center; color: white;`);
+    //createElement('div', "The AI is currently very dumb and won't win every time").style(`width: 100%; position: absolute; top: ${windowHeight - cellSize}px; text-align: center; color: white;`);
 }
 
 function draw() {
@@ -130,6 +130,7 @@ function start() {
         con = true;
         startTimer();
         frameRate(20);
+        timeAI = new Date();
     }
 }
 

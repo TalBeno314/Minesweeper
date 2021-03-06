@@ -5,6 +5,7 @@ let con = true;
 let time = 0;
 let timerStart;
 let h2, canvas, button, buttonAI, p, diff;
+let timeAI;
 
 class Cell {
     isBomb = false;
@@ -98,6 +99,7 @@ function end(board) {
     }
     clearInterval(timerStart);
     time = 0;
+    timeAI = null;
 }
 
 function reset() {
@@ -138,6 +140,11 @@ function gameOver() {
         clearInterval(timerStart);
         time = 0;
         revealAll();
+        if (con) {
+            con = false;
+            let final = new Date();
+            alert(`${final - timeAI} ms to finish`);
+        }
         return true;
     }
 
