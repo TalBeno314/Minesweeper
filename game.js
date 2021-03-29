@@ -90,8 +90,10 @@ function end(board) {
                 console.log("misplaced:", i, j);
                 console.log("misplaced: ", board[i][j].misplaced);
             }
-            board[i][j].isHidden = false;
-            board[i][j].isFlagged = false;
+            if (!board[i][j].isFlagged) {
+                board[i][j].isHidden = false;
+                board[i][j].isFlagged = false;
+            }
         }
     }
     clearInterval(timerStart);
@@ -151,6 +153,10 @@ function revealAll() {
             }
             if (board[i][j].isBomb && !board[i][j].isFlagged) {
                 board[i][j].isFlagged = true;
+                if (flags > 0) {
+                    flags--;
+                    $('#flags')[0].innerHTML = flags.toString();
+                }
             }
         }
     }
