@@ -166,5 +166,5 @@ function selectDiff() {
 }
 
 function regular() {
-    window.location.href = "https://talbeno314.github.io/Minesweeper/";
+    window.location.href = "https://talbeno314.github.io/Minesweeper-Loop/";
 }
