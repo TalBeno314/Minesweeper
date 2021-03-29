@@ -37,6 +37,7 @@ function setup() {
     diff.position(windowWidth / 2 - cellSize * 3, cellSize * 0.3 + cellSize * (h + 2.5)).size(cellSize * 6, cellSize * 2);
     diff.changed(selectDiff);
     diff.id("diff");
+    createButton('looping minesweeper').style("font-size: 22px; font-weight: bolder;").size(cellSize * 5.2, cellSize * 2).mousePressed(regular).position(0, windowHeight - cellSize * 2);
     //createElement('div', "The AI is currently very dumb and won't win every time").style(`width: 100%; position: absolute; top: ${windowHeight - cellSize}px; text-align: center; color: white;`);
 }
 
@@ -162,4 +163,8 @@ function selectDiff() {
     reset();
     rerun();
     reset();
+}
+
+function regular() {
+    window.location.href = "https://talbeno314.github.io/Minesweeper/";
 }
