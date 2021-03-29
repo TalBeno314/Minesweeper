@@ -149,7 +149,7 @@ function revealAll() {
             if (board[i][j].isHidden && !board[i][j].isFlagged && !board[i][j].isBomb) {
                 board[i][j].isHidden = false;
             }
-            if (board[i][j].isBomb) {
+            if (board[i][j].isBomb && !board[i][j].isFlagged) {
                 board[i][j].isFlagged = true;
             }
         }
