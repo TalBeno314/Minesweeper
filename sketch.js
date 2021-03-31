@@ -14,7 +14,7 @@ let textColor = {
 }
 
 let mine, unhidden, hidden, flag;
-let cellSize = 30;
+let cellSize;
 let gameIsOver = false;
 
 function preload() {
@@ -25,19 +25,20 @@ function preload() {
 }
 
 function setup() {
+    cellSize = floor(windowHeight / 24.2);
     h2 = createElement('h2', flags.toString()).id('flags').style(`color: white; position: absolute; font-size: 50px; left: ${windowWidth / 2 - cellSize * w / 2}px; margin-top: 0%;`);
     canvas = createCanvas(w * cellSize, h * cellSize).style(`position: absolute; top: 10%; left: ${windowWidth / 2 - cellSize * w / 2}px;`);
-    button = createButton('new game').position(windowWidth / 2 - cellSize * 1.7, cellSize * 0.3).mousePressed(reset).size(cellSize * 3.4, cellSize * 2).style("font-size: 22px; font-weight: bolder;");
-    buttonAI = createButton('AI').position(windowWidth / 2 + width / 2 - cellSize * 2.5, cellSize * 0.3).size(cellSize * 2.5, cellSize * 2).style("font-size: 22px; font-weight: bolder;").mousePressed(start);
-    p = createElement('p', '0').id('timer').style(`color: white; border: white; position: absolute; font-size: 50px; left: ${windowWidth / 2 - cellSize * w / 2 + cellSize * 3}px; margin-top: 0%;`);
-    diff = createSelect().style("font-size: 22px; font-weight: bolder; text-align: center;");
+    button = createButton('new game').position(windowWidth / 2 - cellSize * 1.7, cellSize * 0.3).mousePressed(reset).size(cellSize * 3.4, cellSize * 2).style(`font-size: ${cellSize * 22 / 30}px; font-weight: bolder;`);
+    buttonAI = createButton('AI').position(windowWidth / 2 + width / 2 - cellSize * 2.5, cellSize * 0.3).size(cellSize * 2.5, cellSize * 2).style(`font-size: ${cellSize * 22 / 30}px; font-weight: bolder;`).mousePressed(start);
+    p = createElement('p', '0').id('timer').style(`color: white; border: white; position: absolute; font-size: ${cellSize * 50 / 30}px; left: ${windowWidth / 2 - cellSize * w / 2 + cellSize * 3}px; margin-top: 0%;`);
+    diff = createSelect().style(`font-size: ${cellSize * 22 / 30}px; font-weight: bolder; text-align: center;`);
     diff.option("expert");
     diff.option("intermediate");
     diff.option("begginer");
     diff.position(windowWidth / 2 - cellSize * 3, cellSize * 0.3 + cellSize * (h + 2.5)).size(cellSize * 6, cellSize * 2);
     diff.changed(selectDiff);
     diff.id("diff");
-    createButton('looping minesweeper').style("font-size: 22px; font-weight: bolder;").size(cellSize * 5.2, cellSize * 2).mousePressed(regular).position(0, windowHeight - cellSize * 2);
+    createButton('looping minesweeper').style(`font-size: ${cellSize * 22 / 30}px; font-weight: bolder;`).size(cellSize * 5.2, cellSize * 2).mousePressed(regular).position(0, windowHeight - cellSize * 2);
     //createElement('div', "The AI is currently very dumb and won't win every time").style(`width: 100%; position: absolute; top: ${windowHeight - cellSize}px; text-align: center; color: white;`);
 }
 
@@ -56,7 +57,7 @@ function draw() {
                 //textFont("Impact");
                 strokeWeight(0);
                 fill(textColor[cell.value]);
-                textSize(25);
+                textSize(cellSize * 25 / 30);
                 textAlign(CENTER);
                 text(cell.value, (i + 0.5) * cellSize, (j + 0.75) * cellSize);
             }
