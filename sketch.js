@@ -29,7 +29,7 @@ function setup() {
     h2 = createElement('h2', flags.toString()).id('flags').style(`color: white; position: absolute; font-size: 50px; left: ${windowWidth / 2 - cellSize * w / 2}px; margin-top: 0%;`);
     canvas = createCanvas(w * cellSize, h * cellSize).style(`position: absolute; top: 10%; left: ${windowWidth / 2 - cellSize * w / 2}px;`);
     button = createButton('new game').position(windowWidth / 2 - cellSize * 1.7, cellSize * 0.3).mousePressed(reset).size(cellSize * 3.4, cellSize * 2).style(`font-size: ${cellSize * 22 / 30}px; font-weight: bolder;`);
-    buttonAI = createButton('AI').position(windowWidth / 2 + width / 2 - cellSize * 2.5, cellSize * 0.3).size(cellSize * 2.5, cellSize * 2).style(`font-size: ${cellSize * 22 / 30}px; font-weight: bolder;`).mousePressed(start);
+    //buttonAI = createButton('AI').position(windowWidth / 2 + width / 2 - cellSize * 2.5, cellSize * 0.3).size(cellSize * 2.5, cellSize * 2).style(`font-size: ${cellSize * 22 / 30}px; font-weight: bolder;`).mousePressed(start);
     p = createElement('p', '0').id('timer').style(`color: white; border: white; position: absolute; font-size: ${cellSize * 50 / 30}px; left: ${windowWidth / 2 - cellSize * w / 2 + cellSize * 3}px; margin-top: 0%;`);
     diff = createSelect().style(`font-size: ${cellSize * 22 / 30}px; font-weight: bolder; text-align: center;`);
     diff.option("expert");
