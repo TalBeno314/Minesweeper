@@ -110,12 +110,14 @@ function mousePressed() {
         }
 
         if (mouseButton === LEFT) {
-            if (!(board[i][j].isFlagged)) {
+            if (!(board[i][j].isFlagged) && board[i][j].isHidden) {
                 if (board[i][j].isBomb) {
                     end(board);
                 } else {
                     reveal(board, i, j);
                 }
+            } else if (!board[i][j].isHidden) {
+                chording(board, i, j);
             }
         }
     }

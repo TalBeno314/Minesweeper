@@ -169,3 +169,31 @@ function startTimer() {
         $("#timer")[0].innerHTML = time.toString();
     }, 1000);
 }
+
+function chording(board, i, j) {
+    console.log("chording");
+    let countFlagged = 0;
+    for (let di = -1; di <= 1; di++) {
+        for (let dj = -1; dj <= 1; dj++) {
+            if ((i + di >= 0) && (i + di < w) && (j + dj >= 0) && (j + dj < h) && !(di == 0 && dj == 0)) {
+                if (board[i + di][j + dj].isFlagged) {
+                    countFlagged++;
+                }
+            }
+        }
+    }
+
+    console.log(countFlagged, countFlagged == board[i][j].value);
+    if (countFlagged == board[i][j].value) {
+        for (let di = -1; di <= 1; di++) {
+            for (let dj = -1; dj <= 1; dj++) {
+                if ((i + di >= 0) && (i + di < w) && (j + dj >= 0) && (j + dj < h) && !(di == 0 && dj == 0)) {
+                    if (!board[i + di][j + dj].isFlagged) {
+                        console.log(`revealing, ${i + di}, ${j + dj}`);
+                        reveal(board, i + di, j + dj);
+                    }
+                }
+            }
+        }
+    }
+}
